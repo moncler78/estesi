@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: tricoserver1
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
