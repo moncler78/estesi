@@ -128,7 +128,7 @@ setInterval(() => {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS: permitir peticiones desde cualquier origen (tu frontend en Azure, etc.)
+// CORS: permitir peticiones desde cualquier origen (frontend, móviles, Azure Blob, etc.)
 app.use(cors());
 
 // Para leer JSON en los webhooks
